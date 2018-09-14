@@ -10,7 +10,7 @@ import UIKit
 
 class TodosTableViewController: UITableViewController {
 
-    var todosItems = ["Read a book", "Clean room", "Make a routine"]
+    var todosItems = ["Work your butt off!"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +49,23 @@ class TodosTableViewController: UITableViewController {
         
     }
     
+    //MARK - Add items
     
     
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+    var textField = UITextField()
+    let alert = UIAlertController(title: "Add new Todos Item", message: "", preferredStyle: .alert)
+    let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+        //what happens when the user clicks add item in uialert
+        self.todosItems.append (textField.text!)
+        self.tableView.reloadData()
+    }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
 }
 
