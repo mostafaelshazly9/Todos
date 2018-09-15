@@ -10,11 +10,15 @@ import UIKit
 
 class TodosTableViewController: UITableViewController {
 
-    var todosItems = ["Work your butt off!"]
+    var todosItems = [String]()
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            todosItems = items
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,6 +62,7 @@ class TodosTableViewController: UITableViewController {
     let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
         //what happens when the user clicks add item in uialert
         self.todosItems.append (textField.text!)
+        self.defaults.set(self.todosItems, forKey: "TodoListArray")
         self.tableView.reloadData()
     }
         alert.addTextField { (alertTextField) in
