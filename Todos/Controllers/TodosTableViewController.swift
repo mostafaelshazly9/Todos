@@ -12,9 +12,11 @@ class TodosTableViewController: UITableViewController {
 
     var todosItems = [Item]()
     let defaults = UserDefaults.standard
-    
+    let dataPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadItems()
     }
 
     //MARK - TableView datasource methods
@@ -36,6 +38,7 @@ class TodosTableViewController: UITableViewController {
         todosItems[indexPath.row].done = !todosItems[indexPath.row].done
         tableView.cellForRow(at: indexPath)?.accessoryType = todosItems[indexPath.row].done ? .checkmark : .none
         tableView.deselectRow(at: indexPath, animated: true)
+        saveDate()
     }
     
     //MARK - Add items
@@ -49,6 +52,7 @@ class TodosTableViewController: UITableViewController {
         let newItem = Item(newTitle: textField.text!)
         self.todosItems.append(newItem)
         self.tableView.reloadData()
+        self.saveDate()
     }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -56,6 +60,27 @@ class TodosTableViewController: UITableViewController {
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    func saveDate(){
+    let encoder = PropertyListEncoder()
+        do{
+            let data = try encoder.encode(todosItems)
+            try data.write(to: dataPath!)
+        }
+        catch{
+            print("Error encoding Item array: \(error)")
+        }
+    }
+    func loadItems(){
+        if let data = try? Data(contentsOf: dataPath!){
+            let decoder = PropertyListDecoder()
+            do{
+            try todosItems = decoder.decode([Item]. self , from: data)
+            }
+            catch{
+                print("Error decoding Items: \(error)")
+            }
+        }
     }
 }
 
